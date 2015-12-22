@@ -243,7 +243,7 @@ router.post("/cekPermission",function(req,res){
     });
 //--cek permission end...
 //insert stock param(id, nama, jumlah, harga total) harga total sesuai kuantitas
-    router.post("/inputStok",function(req,res){
+    router.post("/insertBarang",function(req,res){
        //request id
        var id = req.body.id;
        //request nama
@@ -1204,7 +1204,7 @@ router.post("/showCustomer",function(req,res){
        }
    });
 });
-router.post("/showrincianHarian",function(req,res){
+router.post("/hitungHarian",function(req,res){
 
     // param tanggal
     var date = req.body.date;
@@ -1275,38 +1275,38 @@ router.post("/insertDBHarian",function(req,res){
     });
 });
 
-router.post("/showrincianMingguan",function(req,res){
-
-    // param tanggal
-    var startdate = req.body.startdate;
-    var enddate = req.body.enddate;
-    var totalHarga=0;
-    // pilih harga berdasarkan tanggal
-    var query = "SELECT pesanan,quantity,diskon,hargaAkhir FROM `order` WHERE date BETWEEN '"+startdate+"'AND '"+enddate+"'" ;
-    // var table = [startdate,enddate];
-    // query = mysql.format(query,table);
-
-    //sukses, kembalikan total harga
-    connection.query(query,function(err,success){
-        if(err){
-            // res.json({"message":"tidak dapat menghitung total mingguan"+query})
-            res.json({"message":query})
-        }else{
-          var pesanan = "";
-          var quantity = "";
-          var diskon= "";
-          var hargaAkhir = "";
-          for(i=0;i<success.length;i++){
-              pesanan+= success[i].pesanan+",";
-              quantity+= success[i].quantity+",";
-              diskon+= success[i].diskon+",";
-              hargaAkhir+= success[i].hargaAkhir+",";
-              totalHarga = Number(totalHarga)+Number(success[i].hargaAkhir);
-         }
-          res.json({"pesanan": pesanan,"quantity":quantity,"diskon":diskon,"Harga Akhir":hargaAkhir,"Total Harga":totalHarga});
-        }
-    });
-});
+// router.post("/hitungMingguan",function(req,res){
+//
+//     // param tanggal
+//     var startdate = req.body.startdate;
+//     var enddate = req.body.enddate;
+//     var totalHarga=0;
+//     // pilih harga berdasarkan tanggal
+//     var query = "SELECT pesanan,quantity,diskon,hargaAkhir FROM `order` WHERE date BETWEEN '"+startdate+"'AND '"+enddate+"'" ;
+//     // var table = [startdate,enddate];
+//     // query = mysql.format(query,table);
+//
+//     //sukses, kembalikan total harga
+//     connection.query(query,function(err,success){
+//         if(err){
+//             // res.json({"message":"tidak dapat menghitung total mingguan"+query})
+//             res.json({"message":query})
+//         }else{
+//           var pesanan = "";
+//           var quantity = "";
+//           var diskon= "";
+//           var hargaAkhir = "";
+//           for(i=0;i<success.length;i++){
+//               pesanan+= success[i].pesanan+",";
+//               quantity+= success[i].quantity+",";
+//               diskon+= success[i].diskon+",";
+//               hargaAkhir+= success[i].hargaAkhir+",";
+//               totalHarga = Number(totalHarga)+Number(success[i].hargaAkhir);
+//          }
+//           res.json({"pesanan": pesanan,"quantity":quantity,"diskon":diskon,"Harga Akhir":hargaAkhir,"Total Harga":totalHarga});
+//         }
+//     });
+// });
 
 router.post("/insertDBMingguan",function(req,res){
 
@@ -1344,46 +1344,45 @@ router.post("/insertDBMingguan",function(req,res){
     });
 });
 
-//rincian bulanan
-router.post("/showrincianBulanan",function(req,res){
-
-    // param tanggal
-    var bulan = req.body.bulan;
-    var tahun = req.body.tahun;
-    //var nomerorder=req.body.nomerorder;
-    var totalHarga=Number(0);
-    // pilih harga berdasarkan tanggal
-    var query = "select pesanan,quantity,diskon,hargaAkhir from `order` where EXTRACT(MONTH from date)=? AND EXTRACT(YEAR from date)=?";
-    var table = [bulan,tahun];
-    query = mysql.format(query,table);
-
-    //sukses, kembalikan total harga
-    connection.query(query,function(err,success){
-        if(err){
-            res.json({"message":"gagal menampilkan rincian bulanan"+query})
-        }else{
-            var pesanan = "";
-            var quantity = "";
-            var diskon= "";
-            var hargaAkhir = "";
-            for(i=0;i<success.length;i++){
-                pesanan+= success[i].pesanan+",";
-                quantity+= success[i].quantity+",";
-                diskon+= success[i].diskon+",";
-                hargaAkhir+= success[i].hargaAkhir+",";
-                totalHarga = Number(totalHarga)+Number(success[i].hargaAkhir);
-           }
-            res.json({"pesanan": pesanan,"quantity":quantity,"diskon":diskon,"Harga Akhir":hargaAkhir,"Total Harga":totalHarga});
-
-        }
-    });
-});
+//hitung bulanan
+// router.post("/hitungtotalpendapatanBulanan",function(req,res){
+//    var bulan = req.body.bulan;
+//    var tahun = req.body.tahun;
+//    var queryKode = "select TotalPemasukkan from `laporanharian` where EXTRACT(MONTH from date)=? AND EXTRACT(YEAR from date)=?";
+//    var table = [bulan,tahun];
+//    queryKode = mysql.format(queryKode,table);
+//    connection.query(queryKode,function(err,success)
+//    {
+//        //jika id tidak ada di db
+//        if(err)
+//        {
+//            res.json({"message":"error"+ queryKode});
+//        }
+//        else
+//        {
+//          var totalPendapatanBulanan = 0;
+//          for (var i = 0; i < success.length; i++) {
+//            totalPendapatanBulanan=Number(totalPendapatanBulanan)+success[i].TotalPemasukkan;
+//          }
+//
+//             res.json({"message":totalPendapatanBulanan});
+//        }
+//    });
+// });
 
 router.post("/insertDBBulanan",function(req,res){
 
     var bulan = req.body.bulan;
     var tahun = req.body.tahun;
     var totalpendapatanBulanan=Number(0);
+    var persediaanawal=0;
+    var pembelian=req.body.pembelian;
+    var labakotor = 0;
+    var lababersih=0;
+    var biayabunga = req.body.biayabunga;
+    var labasebelumpajak=0;
+    var biayapajak=req.body.biayapajak;
+    var totalbiayaoperasi=req.body.totalbiayaoperasi;
     var query = "select TotalPemasukkan from `laporanharian` where EXTRACT(MONTH from date)=? AND EXTRACT(YEAR from date)=?";
     var table = [bulan,tahun];
     query = mysql.format(query,table);
